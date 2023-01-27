@@ -35,6 +35,7 @@ export const login = (user) => {
     }
 }
 
+
 // check the user is logged in or not
 export const isUserLoggedIn = () => {
     return async dispatch => {
@@ -55,5 +56,27 @@ export const isUserLoggedIn = () => {
                 payload: {error: 'Failed to login'}
             });
         }
+    }
+}
+
+export const signOut = () => {
+    return async dispatch => {
+        localStorage.clear();
+        dispatch({type: authConstants.LOGOUT_SUCCESS});
+
+        /* dispatch({type: authConstants.LOGOUT_REQUEST});
+         const res = await axios.post(`/admin/signout`);
+
+         if (res.status === 200) {
+             localStorage.clear();
+             dispatch({type: authConstants.LOGOUT_SUCCESS});
+         } else {
+             dispatch({
+                 type: authConstants.LOGOUT_FAILURE,
+                 payload: {error: res.data.error}
+             });
+         }*/
+
+
     }
 }
