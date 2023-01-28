@@ -106,9 +106,9 @@ const Category = (props) => {
                     </select>
                     <Input
                         //  value={categoryName}
-                        placeholder={``}
-                        controlId={`forCategory`}
-                        label={""}
+                        placeholder={`Picture`}
+                        controlId={`forImage`}
+                        label={"Image"}
                         type={'file'}
                         error={""}
                         onChange={handleCategoryImage}
