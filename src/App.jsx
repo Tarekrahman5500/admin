@@ -8,8 +8,9 @@ import NotFound from "./compoents/NotFound/NotFound/NotFound.jsx";
 import PrivateRoute from "./compoents/hoc/privateRoute.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {isUserLoggedIn} from "./actions/authAction.js";
-import Products from "./compoents/products/products.jsx";
-import Orders from "./compoents/orders/orders.jsx";
+import Products from "./containers/products/products.jsx";
+import Orders from "./containers/orders/orders.jsx";
+import Category from "./containers/category/category.jsx";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/products" element={<Products/>}/>
                 <Route path="/orders" element={<Orders/>}/>
+                <Route path="/category" element={<Category/>}/>
             </Route>
 
             <Route path="/signup" element={ (check && auth.authenticate) ?<Signup/> : <Navigate to={`/home`}/>}/>

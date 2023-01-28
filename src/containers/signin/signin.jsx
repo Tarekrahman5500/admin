@@ -33,6 +33,7 @@ const Signin = () => {
             <Container>
                 {
                    auth.error && showErrMsg(auth.error)
+
                 }
                 <Row style={{marginTop: '50px'}}>
                     <Col md={{span: 6, offset: 3}}>
