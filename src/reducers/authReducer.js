@@ -31,6 +31,13 @@ export default (state = initialState, action) => {
             authenticating: false,
         }
     }
+    if (action.type === authConstants.LOGIN_FAILURE) {
+        state = {
+            ...state,
+            error: action.payload.error,
+            loading: false
+        }
+    }
     if (action.type === authConstants.LOGOUT_REQUEST) {
         state = {
             ...state,

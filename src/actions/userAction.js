@@ -35,6 +35,7 @@ export const signup = (user, token) => {
 
 
         } catch (ex) {
+
             /*  if (ex && ex.toString) {
                   // print the general exception
                   console.log(ex.toString() + 'here');

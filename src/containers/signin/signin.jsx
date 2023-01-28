@@ -7,6 +7,7 @@ import Input from "../../compoents/ui/input/input.jsx";
 import {login} from '../../actions/action'
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
+import {showErrMsg} from "../../compoents/notification/Notifications.jsx";
 
 const Signin = () => {
     const [email, setEmail] = useState('');
@@ -15,7 +16,6 @@ const Signin = () => {
     const dispatch = useDispatch()
     const auth = useSelector(state => state.auth)
     const navigate = useNavigate();
-
     const userLogin = (e) => {
         e.preventDefault();
 
@@ -27,9 +27,13 @@ const Signin = () => {
             navigate(`/home`);
         }
     }
+
     return (
         <Layout>
             <Container>
+                {
+                   auth.error && showErrMsg(auth.error)
+                }
                 <Row style={{marginTop: '50px'}}>
                     <Col md={{span: 6, offset: 3}}>
                         <Form onSubmit={userLogin}>
