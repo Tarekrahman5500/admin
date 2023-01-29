@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
 import Layout from "../../compoents/layout/index.jsx";
-import {Button, Col, Container, Modal, Row, Table} from "react-bootstrap";
+import {Col, Container, Row, Table} from "react-bootstrap";
 import Input from "../../compoents/ui/input/input.jsx";
-import {addCategory} from "../../actions/categoryAction.js";
 import {useDispatch, useSelector} from "react-redux";
-import {addProduct} from "../../actions/productAction.js";
+import {addProduct} from "../../actions/action";
 import NewModel from "../../compoents/ui/model/model.jsx";
+import './style.css'
 
 const Products = () => {
 
-    const category = useSelector(state => state.category)
+    const currentCategory = useSelector(state => state.category)
     const product = useSelector(state => state.product)
     const dispatch = useDispatch()
     const [name, setName] = useState("");
@@ -65,14 +65,13 @@ const Products = () => {
 
     const renderProducts = () => {
         return (
-            <Table responsive='sm'>
+            <Table style={{fontSize: 12}} responsive="sm">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th>Description</th>
                     <th>Category</th>
                 </tr>
                 </thead>
@@ -80,43 +79,25 @@ const Products = () => {
                 {
                     product.products.length > 0 ?
                         product.products.map(product =>
-                            <tr key={product._id}>
+                            <tr onClick={() => showProductDetailsModal(product)} key={product._id}>
                                 <td>2</td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.quantity}</td>
-                                <td>{product.description}</td>
-                                {/*<td>{product.category.name}</td>*/}
+                                <td>{product.category?.name}</td>
                                 <td>c3</td>
                                 <td>c4</td>
-
                             </tr>
                         )
                         : null
                 }
-
                 </tbody>
             </Table>
         )
     }
 
-    return (
-        <Layout sidebar>
-            <Container>
-                <Row>
-                    <Col md={12}>
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <h3>Product</h3>
-                            <button onClick={handleShow}>Add</button>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {renderProducts()}
-                    </Col>
-                </Row>
-            </Container>
+    const renderAddProduct = () => {
+        return (
             <NewModel
                 show={show}
                 handleClose={handleClose}
@@ -165,7 +146,7 @@ const Products = () => {
                     onChange={(e) => setCategoryId(e.target.value)}
                 >
                     <option>select category</option>
-                    {createCategoryList(category.categories).map((option) => (
+                    {createCategoryList(currentCategory.categories).map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.name}
                         </option>
@@ -185,6 +166,99 @@ const Products = () => {
                     onChange={handleProductPictures}
                 />
             </NewModel>
+        )
+    }
+
+    const handleCloseProductDetails = () => {
+        setProductDetailModal(false)
+    }
+    const showProductDetailsModal = (product) => {
+      //  console.log(product)
+        setProductDetails(product);
+        setProductDetailModal(true);
+    };
+    const renderProductDetailsModal = () => {
+        if (!productDetails) {
+            return null;
+        }
+    }
+
+
+    const renderShowProductDetails = () => {
+         if (!productDetails) {
+            return null;
+        }
+        return (
+            <NewModel
+                show={productDetailModal}
+                handleClose={handleCloseProductDetails}
+                modelTitle={'Product Details'}
+                size="lg"
+            >
+                <p>Product Details</p>
+                <Row>
+                    <Col md="6">
+                        <label className="key">Name</label>
+                        <p className="value">{productDetails.name}</p>
+                    </Col>
+                    <Col md="6">
+                        <label className="key">Price</label>
+                        <p className="value">{productDetails.price}</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md="6">
+                        <label className="key">Quantity</label>
+                        <p className="value">{productDetails.quantity}</p>
+                    </Col>
+                    <Col md="6">
+                        <label className="key">Category</label>
+                        <p className="value">{productDetails.category.name}</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md="12">
+                        <label className="key">Description</label>
+                        <p className="value">{productDetails.description}</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <label className="key">Product Pictures</label>
+                        <div style={{display: "flex"}}>
+                            { productDetails.productPictures.map((picture) => (
+                                <div key={picture.img} className="productImgContainer">
+                                    <img src={picture.img} alt=""/>
+                                </div>
+                            ))}
+                        </div>
+                    </Col>
+                </Row>
+            </NewModel>
+        )
+    }
+
+    return (
+        <Layout sidebar>
+            <Container>
+                <Row>
+                    <Col md={12}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <h3>Product</h3>
+                            <button onClick={handleShow}>Add</button>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {renderProducts()}
+                    </Col>
+                </Row>
+            </Container>
+            {
+                renderAddProduct()
+            }
+            {renderShowProductDetails()}
         </Layout>
     );
 };

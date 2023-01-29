@@ -3,9 +3,9 @@ import {Button, Modal} from "react-bootstrap";
 import Input from "../input/input.jsx";
 
 const NewModel = (props) => {
-    const {modelTitle,show,handleClose} = props
+    const {modelTitle,show,handleClose, size} = props
     return (
-        <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal size={size} show={show} onHide={handleClose} animation={false}>
                 <Modal.Header closeButton>
                     <Modal.Title>{modelTitle}</Modal.Title>
                 </Modal.Header>
