@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import Layout from "../../compoents/layout/index.jsx";
-import {Button, Col, Container, Modal, Row} from "react-bootstrap";
+import {Button, Col, Container, Modal, Row, Table} from "react-bootstrap";
 import Input from "../../compoents/ui/input/input.jsx";
 import {addCategory} from "../../actions/categoryAction.js";
 import {useDispatch, useSelector} from "react-redux";
 import {addProduct} from "../../actions/productAction.js";
+import NewModel from "../../compoents/ui/model/model.jsx";
 
 const Products = () => {
+
     const category = useSelector(state => state.category)
+    const product = useSelector(state => state.product)
     const dispatch = useDispatch()
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
@@ -29,7 +32,7 @@ const Products = () => {
 
         return options;
     };
-    const handleClose = async() => {
+    const handleClose = async () => {
         const form = new FormData()
         form.append("name", name);
         form.append("quantity", quantity);
@@ -40,15 +43,63 @@ const Products = () => {
         for (let pic of productPictures) {
             form.append("picture", pic);
         }
-        dispatch(addProduct(form))
+        if (name.length > 0 && quantity.length > 0 && price.length > 0
+            && description.length > 0 && categoryId.length > 0) {
+            dispatch(addProduct(form))
+            setName('')
+            setQuantity('')
+            setPrice('')
+            setDescription('')
+            setCategoryId('')
+            setProductPictures([])
+        }
         setShow(false)
     }
+
     const handleShow = () => setShow(true)
 
     const handleProductPictures = (e) => {
         setProductPictures([...productPictures, e.target.files[0]]);
     };
-    console.log(productPictures)
+    //  console.log(productPictures)
+
+    const renderProducts = () => {
+        return (
+            <Table responsive='sm'>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                    product.products.length > 0 ?
+                        product.products.map(product =>
+                            <tr key={product._id}>
+                                <td>2</td>
+                                <td>{product.name}</td>
+                                <td>{product.price}</td>
+                                <td>{product.quantity}</td>
+                                <td>{product.description}</td>
+                                {/*<td>{product.category.name}</td>*/}
+                                <td>c3</td>
+                                <td>c4</td>
+
+                            </tr>
+                        )
+                        : null
+                }
+
+                </tbody>
+            </Table>
+        )
+    }
+
     return (
         <Layout sidebar>
             <Container>
@@ -60,82 +111,80 @@ const Products = () => {
                         </div>
                     </Col>
                 </Row>
+                <Row>
+                    <Col>
+                        {renderProducts()}
+                    </Col>
+                </Row>
             </Container>
-            <Modal show={show} onHide={handleClose} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add New Product</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Input
-                        value={name}
-                        placeholder={`Product Name`}
-                        controlId={`forProduct`}
-                        label={"Product"}
-                        type={'text'}
-                        error={""}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <Input
-                        value={quantity}
-                        placeholder={`Product Quantity`}
-                        controlId={`forQuantity`}
-                        label={"Quantity"}
-                        type={'text'}
-                        //  step={'0.01'}
-                        error={""}
-                        onChange={(e) => setQuantity(e.target.value)}
-                    />
-                    <Input
-                        value={price}
-                        placeholder={`Product Price`}
-                        controlId={`forPrice`}
-                        label={" Price"}
-                        type={'text'}
-                        //  step={'0.01'}
-                        error={""}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                    <Input
-                        value={description}
-                        placeholder={`Product Description`}
-                        controlId={`forDescription`}
-                        label={"Description"}
-                        type={'text'}
-                        error={""}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                    <select
-                        className="form-control"
-                        value={categoryId}
-                        onChange={(e) => setCategoryId(e.target.value)}
-                    >
-                        <option>select category</option>
-                        {createCategoryList(category.categories).map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.name}
-                            </option>
-                        ))}
-                        {productPictures.length > 0
-                            ? productPictures.map((pic, index) => (
-                                <div key={index}>{pic.name}</div>
-                            ))
-                            : null}
-                    </select>
-                    <Input
-                        placeholder={`Picture`}
-                        controlId={`forImage`}
-                        label={"Image"}
-                        type={'file'}
-                        error={""}
-                        onChange={handleProductPictures}
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <NewModel
+                show={show}
+                handleClose={handleClose}
+                modelTitle={'ADD new Product'}>
+                <Input
+                    value={name}
+                    placeholder={`Product Name`}
+                    controlId={`forProduct`}
+                    label={"Product"}
+                    type={'text'}
+                    error={""}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <Input
+                    value={quantity}
+                    placeholder={`Product Quantity`}
+                    controlId={`forQuantity`}
+                    label={"Quantity"}
+                    type={'text'}
+                    //  step={'0.01'}
+                    error={""}
+                    onChange={(e) => setQuantity(e.target.value)}
+                />
+                <Input
+                    value={price}
+                    placeholder={`Product Price`}
+                    controlId={`forPrice`}
+                    label={" Price"}
+                    type={'text'}
+                    //  step={'0.01'}
+                    error={""}
+                    onChange={(e) => setPrice(e.target.value)}
+                />
+                <Input
+                    value={description}
+                    placeholder={`Product Description`}
+                    controlId={`forDescription`}
+                    label={"Description"}
+                    type={'text'}
+                    error={""}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <select
+                    className="form-control"
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                >
+                    <option>select category</option>
+                    {createCategoryList(category.categories).map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.name}
+                        </option>
+                    ))}
+                    {productPictures.length > 0
+                        ? productPictures.map((pic, index) => (
+                            <div key={index}>{pic.name}</div>
+                        ))
+                        : null}
+                </select>
+                <Input
+                    placeholder={`Picture`}
+                    controlId={`forImage`}
+                    label={"Image"}
+                    type={'file'}
+                    error={""}
+                    onChange={handleProductPictures}
+                />
+            </NewModel>
         </Layout>
     );
 };

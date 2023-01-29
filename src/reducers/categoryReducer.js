@@ -8,12 +8,22 @@ const initialState = {
 
 const buildNewCategories = (parentId, categories, category) => {
     let myCategories = []
+    if (parentId == undefined) {
+        return [
+            ...categories,
+            {
+                _id: category._id,
+                name: category.name,
+                slug: category.slug,
+                children: [],
+            }
+        ]
+    }
     for (let cat of categories) {
         if (cat._id == parentId) {
             myCategories.push({
                 ...cat,
-                children: cat.children &&
-                cat.children.length > 0 ?
+                children: cat.children ?
                     buildNewCategories(parentId, [...cat.children, {
                         _id: category._id,
                         name: category.name,
@@ -26,9 +36,7 @@ const buildNewCategories = (parentId, categories, category) => {
         } else {
             myCategories.push({
                 ...cat,
-                children: cat.children &&
-                cat.children.length > 0 ?
-                    buildNewCategories(parentId, cat.children, category) : []
+                children: cat.children ? buildNewCategories(parentId, cat.children, category) : []
             })
         }
     }
@@ -51,7 +59,7 @@ export default (state = initialState, action) => {
     if (action.type === categoryConstants.ADD_NEW_CATEGORY_SUCCESS) {
         const category = action.payload.category
         const updatedCategories = buildNewCategories(category.parentId, state.categories, category)
-        console.log(updatedCategories)
+        //console.log(updatedCategories)
         state = {
             ...state,
             loading: false,
