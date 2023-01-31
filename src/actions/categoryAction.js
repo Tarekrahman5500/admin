@@ -6,7 +6,7 @@ export const getAllCategory = () => {
         try {
             dispatch({type: categoryConstants.GET_ALL_CATEGORIES_REQUEST})
             const res = await axios.get(`category/getcategory`)
-          //  console.log(res)
+            //  console.log(res)
             if (res.status === 200) {
                 const {categoryList} = res.data
                 dispatch({
@@ -24,23 +24,49 @@ export const getAllCategory = () => {
 }
 
 export const addCategory = (form) => {
-
+ // console.log(form)
     return async dispatch => {
         try {
             dispatch({type: categoryConstants.ADD_NEW_CATEGORY_REQUEST})
             const res = await axios.post(`/category/create`, form)
-           // console.log(res)
+            // console.log(res)
             if (res.status === 200) {
                 dispatch({
                     type: categoryConstants.ADD_NEW_CATEGORY_SUCCESS,
-                    payload:{category: res.data}
+                    payload: {category: res.data}
                 })
             }
         } catch (err) {
-               dispatch({
+            dispatch({
                 type: categoryConstants.ADD_NEW_CATEGORY_FAILURE,
                 payload: {error: err.response.data.error}
             })
+        }
+    }
+}
+
+export const updateCategories = (form) => {
+    return async dispatch => {
+        try {
+           // dispatch({type: categoryConstants.UPDATE_CATEGORIES_REQUEST});
+            const res = await axios.post(`category/update`, form);
+            console.log(res.data)
+            if (res.status === 201) {
+                dispatch({type: categoryConstants.UPDATE_CATEGORIES_SUCCESS});
+                dispatch(getAllCategory());
+            } else {
+                const {error} = res.data;
+                dispatch({
+                    type: categoryConstants.UPDATE_CATEGORIES_FAILURE,
+                    payload: {error}
+                });
+            }
+        } catch (err) {
+               console.error(err.response.data.error)
+            dispatch({
+                type: categoryConstants.UPDATE_CATEGORIES_FAILURE,
+                payload: {error: err.response.data.error}
+            });
         }
     }
 }

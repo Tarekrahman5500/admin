@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Layout from "../../compoents/layout/index.jsx";
 import {Col, Container, Row} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
-import {addCategory} from "../../actions/action";
+import {addCategory, updateCategories} from "../../actions/action";
 import Input from "../../compoents/ui/input/input.jsx";
 import NewModel from "../../compoents/ui/model/model.jsx";
 import CheckboxTree from 'react-checkbox-tree';
@@ -95,86 +95,36 @@ const Category = (props) => {
         return options
     }
 
-    return (
-        <Layout sidebar>
-            <Container>
-                <Row>
-                    <Col md={12}>
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <h3>Category</h3>
-                            <button onClick={handleShow}>Add</button>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col md={12}>
-                        {/*<ul>
-                            {renderCategories(category.categories)}
+    const updateCategoriesForm = () => {
+        const form = new FormData();
 
-                        </ul>*/}
-                        <CheckboxTree
-                            nodes={renderCategories(category.categories)}
-                            checked={checked}
-                            expanded={expanded}
-                            onCheck={checked => setChecked(checked)}
-                            onExpand={expanded => setExpanded(expanded)}
-                            icons={{
-                                check: <IoIosCheckbox/>,
-                                uncheck: <IoIosCheckboxOutline/>,
-                                halfCheck: <IoIosCheckboxOutline/>,
-                                expandClose: <IoIosArrowForward/>,
-                                expandOpen: <IoIosArrowDown/>,
-                            }
-                            }
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <button>Delete</button>
-                        <button onClick={updateCategory}>Edit</button>
-                    </Col>
-                </Row>
-            </Container>
-            <NewModel
-                show={show}
-                handleClose={handleClose}
-                modelTitle={'ADD new category'}
-            >
-                <Input
-                    value={categoryName}
-                    placeholder={`Category Name`}
-                    controlId={`forCategory`}
-                    label={"Category"}
-                    type={'text'}
-                    error={""}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                />
-                <select
-                    className="form-control"
-                    value={parentCategoryId}
-                    onChange={(e) => setParentCategoryId(e.target.value)}>
-                    <option>select Category</option>
-                    {
-                        createCategoryList(category.categories).map(options =>
-                            <option key={options.value} value={options.value}>{options.name}</option>)
-                    }
-                </select>
-                <Input
-                    //  value={categoryName}
-                    placeholder={`Picture`}
-                    controlId={`forImage`}
-                    label={"Image"}
-                    type={'file'}
-                    error={""}
-                    onChange={handleCategoryImage}
-                />
-            </NewModel>
+        expandedArray.forEach((item, index) => {
+            form.append('_id', item.value);
+            form.append('name', item.name);
+            form.append('parentId', item.parentId ? item.parentId : "");
+             form.append('type', item.type);
+        });
+        checkArray.forEach((item, index) => {
+            form.append('_id', item.value);
+            form.append('name', item.name);
+            form.append('parentId', item.parentId ? item.parentId : "");
+             form.append('type', item.type);
+        });
+        // console.log(form)
+        dispatch(updateCategories(form));
 
-            {/*Edit categories*/}
+
+        setCategoryName('')
+        setParentCategoryId('')
+        setUpdateCategoryModel(false)
+    }
+
+    const renderUpdateCategoriesModel = () => {
+        return (
+
             <NewModel
                 show={updateCategoryModel}
-                handleClose={() => setUpdateCategoryModel(false)}
+                handleClose={updateCategoriesForm}
                 modelTitle={'Update Categories'}
                 size="lg"
             >
@@ -270,7 +220,7 @@ const Category = (props) => {
                                     <option value="page">Page</option>
                                 </select>
                             </Col>
-                            <Input
+                            {/* <Input
                                 //  value={categoryName}
                                 placeholder={`Picture`}
                                 controlId={`forImage`}
@@ -278,12 +228,97 @@ const Category = (props) => {
                                 type={'file'}
                                 error={""}
                                 onChange={handleCategoryImage}
-                            />
+                            />*/}
                         </Row>
                     )
                 }
 
             </NewModel>
+        )
+    }
+
+    const renderAddCategoryModel = () => {
+        return (
+            <NewModel
+                show={show}
+                handleClose={handleClose}
+                modelTitle={'ADD new category'}
+            >
+                <Input
+                    value={categoryName}
+                    placeholder={`Category Name`}
+                    controlId={`forCategory`}
+                    label={"Category"}
+                    type={'text'}
+                    error={""}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                />
+                <select
+                    className="form-control"
+                    value={parentCategoryId}
+                    onChange={(e) => setParentCategoryId(e.target.value)}>
+                    <option>select Category</option>
+                    {
+                        createCategoryList(category.categories).map(options =>
+                            <option key={options.value} value={options.value}>{options.name}</option>)
+                    }
+                </select>
+                <Input
+                    //  value={categoryName}
+                    placeholder={`Picture`}
+                    controlId={`forImage`}
+                    label={"Image"}
+                    type={'file'}
+                    error={""}
+                    onChange={handleCategoryImage}
+                />
+            </NewModel>
+        )
+    }
+
+    return (
+        <Layout sidebar>
+            <Container>
+                <Row>
+                    <Col md={12}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <h3>Category</h3>
+                            <button onClick={handleShow}>Add</button>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                        {/*<ul>
+                            {renderCategories(category.categories)}
+
+                        </ul>*/}
+                        <CheckboxTree
+                            nodes={renderCategories(category.categories)}
+                            checked={checked}
+                            expanded={expanded}
+                            onCheck={checked => setChecked(checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                                check: <IoIosCheckbox/>,
+                                uncheck: <IoIosCheckboxOutline/>,
+                                halfCheck: <IoIosCheckboxOutline/>,
+                                expandClose: <IoIosArrowForward/>,
+                                expandOpen: <IoIosArrowDown/>,
+                            }
+                            }
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <button>Delete</button>
+                        <button onClick={updateCategory}>Edit</button>
+                    </Col>
+                </Row>
+            </Container>
+            {renderAddCategoryModel()}
+            {renderUpdateCategoriesModel()}
         </Layout>
     );
 };
