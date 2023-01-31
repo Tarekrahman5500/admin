@@ -1,11 +1,12 @@
 import React from 'react';
 import {Form} from "react-bootstrap";
 
-const Input = ({label, type, placeholder, controlId, value, onChange, error}) => {
+const Input = (props) => {
+    const { type, placeholder, controlId, value, onChange, error} = props
     return (
         // a generic form for an item
         <Form.Group className="mb-3" controlId={controlId}>
-            <Form.Label>{label}</Form.Label>
+            {props.label &&  <Form.Label>{props.label}</Form.Label>}
             <Form.Control
                 type={type}
                 placeholder={placeholder}

@@ -21,6 +21,7 @@ const Products = () => {
     const [show, setShow] = useState(false);
     const [productDetailModal, setProductDetailModal] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    let index = 1
 
     const createCategoryList = (categories, options = []) => {
         for (let category of categories) {
@@ -80,7 +81,8 @@ const Products = () => {
                     product.products.length > 0 ?
                         product.products.map(product =>
                             <tr onClick={() => showProductDetailsModal(product)} key={product._id}>
-                                <td>2</td>
+
+                                <td>{index++}</td>
                                 <td>{product.name}</td>
                                 <td>{product.price}</td>
                                 <td>{product.quantity}</td>
