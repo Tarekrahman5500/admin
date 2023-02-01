@@ -2,7 +2,12 @@ import React, {useState} from 'react';
 import Layout from "../../compoents/layout/index.jsx";
 import {Col, Container, Row} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
-import {addCategory, updateCategories} from "../../actions/action";
+import {
+    addCategory,
+    getAllCategory,
+    updateCategories,
+    deleteCategories as deleteCategoriesAction
+} from "../../actions/action";
 import Input from "../../compoents/ui/input/input.jsx";
 import NewModel from "../../compoents/ui/model/model.jsx";
 import CheckboxTree from 'react-checkbox-tree';
@@ -18,9 +23,10 @@ const Category = (props) => {
     const [categoryImage, setCategoryImage] = useState('')
     const [checked, setChecked] = useState([])
     const [expanded, setExpanded] = useState([])
-    const [checkArray, setCheckArray] = useState([])
+    const [checkedArray, setCheckedArray] = useState([])
     const [expandedArray, setExpandedArray] = useState([])
     const [updateCategoryModel, setUpdateCategoryModel] = useState(false)
+    const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
 
     const handleClose = () => {
         const form = new FormData()
@@ -28,23 +34,36 @@ const Category = (props) => {
         form.append('parentId', parentCategoryId)
         form.append('picture', categoryImage)
         //  console.log(typeof categoryImage)
-        if (categoryName.length > 0) {
-            //   console.log(categoryName, categoryImage)
-            dispatch(addCategory(form))
-        }
+        //   console.log(categoryName, categoryImage)
+        categoryName.length && dispatch(addCategory(form)).then(result => {
+            if (result) {
+                dispatch(getAllCategory())
+                setCategoryName('')
+                setParentCategoryId('')
+                setCategoryImage('')
+                setShow(false)
+            }
+        });
         setCategoryName('')
         setParentCategoryId('')
         setCategoryImage('')
         setShow(false)
+
     }
     const handleShow = () => setShow(true)
 
     const handleCategoryImage = (e) => {
-        setCategoryImage(e.target.files[0])
+        setCategoryImage(e.target.files[0] || "")
     }
 
     const updateCategory = () => {
+        updateCheckedAndExpandedCategories()
         setUpdateCategoryModel(true)
+
+    }
+
+    const updateCheckedAndExpandedCategories = () => {
+
         const categories = createCategoryList(category.categories)
         const checkedArray = []
         const expandedArray = []
@@ -56,20 +75,20 @@ const Category = (props) => {
             const category = categories.find((category, _index) => categoryId === category.value)
             category && expandedArray.push(category)
         })
-        setCheckArray(checkedArray)
+        setCheckedArray(checkedArray)
         setExpandedArray(expandedArray)
-        console.log({checked, expanded, categories, checkedArray, expandedArray})
+        // console.log({checked, expanded, categories, checkedArray, expandedArray})
     }
 
     const handleCategoryInput = (key, value, index, type) => {
         if (type === 'checked') {
-            const updatedCheckArray =
-                checkArray.map((item, _index) => _index === index ? {...item, [key]: value} : item)
-            setCheckArray(updatedCheckArray)
+            const updatedCheckedArray =
+                checkedArray.map((item, _index) => _index === index ? {...item, [key]: value} : item)
+            setCheckedArray(updatedCheckedArray)
         } else if (type === 'expanded') {
             const updatedExpandedArray =
                 expandedArray.map((item, _index) => _index === index ? {...item, [key]: value} : item)
-            setCheckArray(updatedExpandedArray)
+            setCheckedArray(updatedExpandedArray)
         }
     }
 
@@ -102,13 +121,13 @@ const Category = (props) => {
             form.append('_id', item.value);
             form.append('name', item.name);
             form.append('parentId', item.parentId ? item.parentId : "");
-             form.append('type', item.type);
+            form.append('type', item.type);
         });
-        checkArray.forEach((item, index) => {
+        checkedArray.forEach((item, index) => {
             form.append('_id', item.value);
             form.append('name', item.name);
             form.append('parentId', item.parentId ? item.parentId : "");
-             form.append('type', item.type);
+            form.append('type', item.type);
         });
         // console.log(form)
         dispatch(updateCategories(form));
@@ -184,8 +203,8 @@ const Category = (props) => {
                 }
                 <h6>Checked Categories</h6>
                 {
-                    checkArray.length > 0 &&
-                    checkArray.map((item, index) =>
+                    checkedArray.length > 0 &&
+                    checkedArray.map((item, index) =>
                         <Row key={index}>
                             <Col>
                                 <Input
@@ -237,6 +256,60 @@ const Category = (props) => {
         )
     }
 
+    const deleteCategory = () => {
+        updateCheckedAndExpandedCategories()
+        setDeleteCategoryModal(true)
+    }
+    const deleteCategories = () => {
+        const checkedIdsArray = checkedArray.map((item, index) => ({_id: item.value}));
+        const expandedIdsArray = expandedArray.map((item, index) => ({_id: item.value}));
+        const idsArray = expandedIdsArray.concat(checkedIdsArray);
+       // console.log('here')
+        if (checkedIdsArray.length > 0) {
+            console.log(checkedIdsArray)
+            dispatch(deleteCategoriesAction(checkedIdsArray))
+                .then(result => {
+                    if (result) {
+                        dispatch(getAllCategory())
+                        setDeleteCategoryModal(false)
+                    }
+                });
+        }
+
+        setDeleteCategoryModal(false);
+
+
+    }
+    const renderDeleteCategoryModel = () => {
+
+        //console.log('delete', checkedArray, expandedArray)
+        return (
+            <NewModel
+                modelTitle="Confirm"
+                show={deleteCategoryModal}
+                handleClose={() => setDeleteCategoryModal(false)}
+                buttons={[
+                    {
+                        label: 'No',
+                        color: 'primary',
+                        onClick: () => {
+                            window.alert('no');
+                        }
+                    },
+                    {
+                        label: 'Yes',
+                        color: 'danger',
+                        onClick: () => deleteCategories()
+                    }
+                ]}
+            >
+                <h5>Expanded</h5>
+                {expandedArray.map((item, index) => <span key={index}>{item.name}</span>)}
+                <h5>Checked</h5>
+                {checkedArray.map((item, index) => <span key={index}>{item.name}</span>)}
+            </NewModel>
+        )
+    }
     const renderAddCategoryModel = () => {
         return (
             <NewModel
@@ -312,13 +385,14 @@ const Category = (props) => {
                 </Row>
                 <Row>
                     <Col>
-                        <button>Delete</button>
+                        <button onClick={deleteCategory}>Delete</button>
                         <button onClick={updateCategory}>Edit</button>
                     </Col>
                 </Row>
             </Container>
             {renderAddCategoryModel()}
             {renderUpdateCategoriesModel()}
+            {renderDeleteCategoryModel()}
         </Layout>
     );
 };
