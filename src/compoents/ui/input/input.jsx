@@ -12,6 +12,7 @@ const Input = (props) => {
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                {...props}
             />
             <Form.Text className="text-muted">
                 {error}

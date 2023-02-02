@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Modal} from "react-bootstrap";
-import Input from "../input/input.jsx";
 
 const NewModel = (props) => {
     const {modelTitle, show, handleClose, size, buttons} = props
@@ -14,8 +13,9 @@ const NewModel = (props) => {
         <Modal.Footer>
             {buttons ? (buttons.map((btn, index) => (<Button key={index} variant={btn.color} onClick={btn.onClick}>
                 {btn.label}
-            </Button>))) : (<Button variant="primary"  {...props} onClick={handleClose}>
-                Save Changes
+            </Button>))) : (<Button variant="primary" className="btn-sm" style={{backgroundColor: '#333'}}
+                                    {...props} onClick={handleClose}>
+                Save
             </Button>)}
 
         </Modal.Footer>

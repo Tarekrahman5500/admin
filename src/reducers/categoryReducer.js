@@ -31,7 +31,7 @@ const buildNewCategories = (parentId, categories, category) => {
             };
             myCategories.push({
                 ...cat,
-                children: cat.children > 0 ? [...cat.children, newCategory]: [newCategory]
+                children: cat.children > 0 ? [...cat.children, newCategory] : [newCategory]
             })
         } else {
             myCategories.push({
@@ -71,5 +71,45 @@ export default (state = initialState, action) => {
             ...initialState
         }
     }
+
+    if (action.type === categoryConstants.UPDATE_CATEGORIES_REQUEST) {
+        state = {
+            ...state,
+            loading: true
+        }
+    }
+    if (action.type === categoryConstants.UPDATE_CATEGORIES_SUCCESS) {
+        state = {
+            ...state,
+            loading: false
+        }
+    }
+    if (action.type === categoryConstants.UPDATE_CATEGORIES_FAILURE) {
+        state = {
+            ...state,
+            error: action.payload.error,
+            loading: false
+        }
+    }
+    if (action.type === categoryConstants.DELETE_CATEGORIES_REQUEST) {
+        state = {
+            ...state,
+            loading: true
+        }
+    }
+    if (action.type === categoryConstants.DELETE_CATEGORIES_SUCCESS) {
+        state = {
+            ...state,
+            loading: false
+        }
+    }
+    if (action.type === categoryConstants.DELETE_CATEGORIES_FAILURE) {
+        state = {
+            ...state,
+            loading: false,
+            error: action.payload.error
+        }
+    }
+
     return state
 }

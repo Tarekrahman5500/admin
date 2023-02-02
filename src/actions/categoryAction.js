@@ -1,7 +1,7 @@
 import axios from "../helpers/axios.js";
 import {categoryConstants} from "./constants.js";
 
-export const getAllCategory = () => {
+const getAllCategory = () => {
     return async dispatch => {
         try {
             dispatch({type: categoryConstants.GET_ALL_CATEGORIES_REQUEST})
@@ -49,7 +49,7 @@ export const addCategory = (form) => {
 export const updateCategories = (form) => {
     return async dispatch => {
         try {
-           // dispatch({type: categoryConstants.UPDATE_CATEGORIES_REQUEST});
+            dispatch({type: categoryConstants.UPDATE_CATEGORIES_REQUEST});
             const res = await axios.post(`category/update`, form);
             console.log(res.data)
             if (res.status === 201) {
@@ -99,5 +99,9 @@ export const deleteCategories = (ids) => {
             });
         }
     }
+}
+
+export  {
+    getAllCategory
 }
 
