@@ -20,7 +20,7 @@ const AddCategoryModel = (props) => {
         <NewModel
             show={show}
             handleClose={handleClose}
-            modelTitle={modalTitle}
+            modalTitle={modalTitle}
         >
             <Row>
                 <Col>

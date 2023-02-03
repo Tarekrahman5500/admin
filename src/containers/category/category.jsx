@@ -107,7 +107,7 @@ const Category = (props) => {
 
     const createCategoryList = (categories, options = []) => {
         for (let category of categories) {
-            options.push({value: category._id, name: category.name, parentId: category.parentId,})
+            options.push({value: category._id, name: category.name, parentId: category.parentId, type: category.type})
             if (category.children.length > 0) {
                 createCategoryList(category.children, options)
             }
@@ -161,7 +161,7 @@ const Category = (props) => {
         //console.log('delete', checkedArray, expandedArray)
         return (
             <NewModel
-                modelTitle="Confirm"
+                modalTitle="Confirm"
                 show={deleteCategoryModal}
                 handleClose={() => setDeleteCategoryModal(false)}
                 buttons={[
@@ -245,7 +245,7 @@ const Category = (props) => {
             <UpdateCategoriesModel
                 show={updateCategoryModel}
                 handleClose={updateCategoriesForm}
-                modelTitle={'Update Categories'}
+                modalTitle={'Update Categories'}
                 size="lg"
                 expandedArray={expandedArray}
                 checkedArray={checkedArray}

@@ -2,10 +2,10 @@ import React from 'react';
 import {Button, Modal} from "react-bootstrap";
 
 const NewModel = (props) => {
-    const {modelTitle, show, handleClose, size, buttons} = props
+    const {modalTitle, show, handleClose, size, buttons} = props
     return (<Modal size={size} show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
-            <Modal.Title>{modelTitle}</Modal.Title>
+            <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             {props.children}

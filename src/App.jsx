@@ -11,6 +11,7 @@ import {isUserLoggedIn, getInitialData} from "./actions/action";
 import Products from "./containers/products/products.jsx";
 import Orders from "./containers/orders/orders.jsx";
 import Category from "./containers/category/category.jsx";
+import Page from "./containers/page/page.jsx";
 
 
 
@@ -32,6 +33,7 @@ function App() {
             <Route element={<PrivateRoute/>}>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/home" element={<Home/>}/>
+                 <Route path="/page" element={<Page/>}/>
                 <Route path="/products" element={<Products/>}/>
                 <Route path="/orders" element={<Orders/>}/>
                 <Route path="/category" element={<Category/>}/>

@@ -87,8 +87,6 @@ const Products = () => {
                                 <td>{product.price}</td>
                                 <td>{product.quantity}</td>
                                 <td>{product.category?.name}</td>
-                                <td>c3</td>
-                                <td>c4</td>
                             </tr>
                         )
                         : null
@@ -103,7 +101,7 @@ const Products = () => {
             <NewModel
                 show={show}
                 handleClose={handleClose}
-                modelTitle={'ADD new Product'}>
+                modalTitle={'ADD new Product'}>
                 <Input
                     value={name}
                     placeholder={`Product Name`}
@@ -194,7 +192,7 @@ const Products = () => {
             <NewModel
                 show={productDetailModal}
                 handleClose={handleCloseProductDetails}
-                modelTitle={'Product Details'}
+                modalTitle={'Product Details'}
                 size="lg"
             >
                 <p>Product Details</p>
