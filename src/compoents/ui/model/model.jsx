@@ -14,7 +14,7 @@ const NewModel = (props) => {
             {buttons ? (buttons.map((btn, index) => (<Button key={index} variant={btn.color} onClick={btn.onClick}>
                 {btn.label}
             </Button>))) : (<Button variant="primary" className="btn-sm" style={{backgroundColor: '#333'}}
-                                    {...props} onClick={handleClose}>
+                                    {...props} onClick={props.onSubmit}>
                 Save
             </Button>)}
 

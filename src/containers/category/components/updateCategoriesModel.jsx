@@ -25,6 +25,7 @@ const UpdateCategoriesModel = (props) => {
             handleClose={handleClose}
             modalTitle={modalTitle}
             size={size}
+            onSubmit={onSubmit}
         >
             <Row>
                 <Col>

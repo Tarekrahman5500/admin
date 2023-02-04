@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Layout from "../../compoents/layout/index.jsx";
 import {Col, Container, Row} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
@@ -36,14 +36,20 @@ const Category = (props) => {
     const [updateCategoryModel, setUpdateCategoryModel] = useState(false)
     const [deleteCategoryModal, setDeleteCategoryModal] = useState(false);
 
+        useEffect(() => {
+            if (!category.loading) {
+            setShow(false);
+        }
+
+    }, [category.loading]);
+
     const handleClose = () => {
         const form = new FormData()
         form.append('name', categoryName)
         form.append('parentId', parentCategoryId)
         form.append('picture', categoryImage)
-        //  console.log(typeof categoryImage)
-        //   console.log(categoryName, categoryImage)
-        categoryName.length && dispatch(addCategory(form))
+        // console.log(categoryName.length, categoryImage.size, parentCategoryId.length)
+        categoryName.length > 0 && parentCategoryId.length > 0 && categoryImage.size && dispatch(addCategory(form))
         setCategoryName('')
         setParentCategoryId('')
         setCategoryImage('')
@@ -232,7 +238,8 @@ const Category = (props) => {
             </Container>
             <AddCategoryModel
                 show={show}
-                handleClose={handleClose}
+                handleClose={() => setShow(false)}
+                onSubmit={handleClose}
                 modalTitle={'ADD New category'}
                 categoryName={categoryName}
                 setCategoryName={setCategoryName}
@@ -244,7 +251,8 @@ const Category = (props) => {
             </AddCategoryModel>
             <UpdateCategoriesModel
                 show={updateCategoryModel}
-                handleClose={updateCategoriesForm}
+                handleClose={() => setUpdateCategoryModel(false)}
+                onSubmit={updateCategoriesForm}
                 modalTitle={'Update Categories'}
                 size="lg"
                 expandedArray={expandedArray}

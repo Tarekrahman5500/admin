@@ -11,6 +11,7 @@ const Page = (props) => {
     const [createModal, setCreateModal] = useState(false);
     const [title, setTitle] = useState('');
     const category = useSelector(state => state.category)
+    const page = useSelector(state => state.page)
     const [categories, setCategories] = useState([]);
     const [categoryId, setCategoryId] = useState('');
     const [desc, setDesc] = useState('');
@@ -22,27 +23,39 @@ const Page = (props) => {
     useEffect(() => {
         setCategories(linearCategories(category.categories))
     }, [category])
+
+    useEffect(() => {
+        console.log(page);
+        if (!page.loading) {
+            setCreateModal(false);
+            setTitle('');
+            setCategoryId('');
+            setDesc('');
+            setProducts([]);
+            setBanners([]);
+        }
+    }, [page]);
     // console.log('category', categories)
     const handleBannerImages = (e) => {
-      //  console.log(e);
+        //  console.log(e);
         setBanners([...banners, e.target.files[0]]);
     }
 
     const handleProductImages = (e) => {
-      //  console.log(e);
+        //  console.log(e);
         setProducts([...products, e.target.files[0]]);
     }
     const onCategoryChange = (e) => {
-       // console.log(e.target.value)
-        const category = categories.find(category => category._id == e.target.value);
-     //   console.log(category)
+        // console.log(e.target.value)
+        const category = categories.find(category => category.value == e.target.value);
+        //   console.log(category)
         setCategoryId(e.target.value);
         setType(category.type);
     }
 
     const submitPageForm = (e) => {
-       // e.preventDefault();
-     // console.log(banners.length)
+        // e.preventDefault();
+        // console.log(banners.length)
         if (title === "") {
             window.alert('Title is required');
             setCreateModal(false);
@@ -75,10 +88,10 @@ const Page = (props) => {
         products.forEach((product, index) => {
             form.append('products', product);
         });
-        console.log({title, desc, categoryId, type, banners, products})
+        // console.log({title, desc, categoryId, type, banners, products})
 
-         dispatch(createPage(form));
-         setCreateModal(false);
+        dispatch(createPage(form));
+        setCreateModal(false);
 
 
     }
@@ -86,14 +99,14 @@ const Page = (props) => {
         return (
             <NewModel
                 show={createModal}
-                handleClose={submitPageForm}
+                handleClose={() => setCreateModal(false)}
                 modalTitle={'Create New Page'}
-                // onSubmit={submitPageForm}
+                onSubmit={submitPageForm}
             >
                 <Container>
                     <Row>
                         <Col>
-                            <select
+                            {/*<select
                                 className="form-control form-control-sm"
                                 value={categoryId}
                                 onChange={onCategoryChange}
@@ -104,7 +117,16 @@ const Page = (props) => {
                                         <option key={cat._id} value={cat._id}>{cat.name}</option>
                                     )
                                 }
-                            </select>
+                            </select>*/}
+                            <Input
+                                type="select"
+                                lable={''}
+                                value={categoryId}
+                                onChange={onCategoryChange}
+                                controlId={''}
+                                options={categories}
+                                placeholder={'Select Category'}
+                                />
                         </Col>
                     </Row>
                     <Row>
@@ -184,8 +206,18 @@ const Page = (props) => {
     }
     return (
         <Layout sidebar>
-            {renderPageModel()}
-            <button onClick={() => setCreateModal(true)}>Add Page</button>
+            {
+                page.loading ?
+                    <>
+                        page.loading ?
+                        <p>Creating Page...please wait</p>
+                    </>
+                    : <>
+                        {renderPageModel()}
+                        <button onClick={() => setCreateModal(true)}>Add Page</button>
+                    </>
+            }
+
         </Layout>
     );
 };

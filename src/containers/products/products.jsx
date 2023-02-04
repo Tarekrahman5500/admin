@@ -100,7 +100,8 @@ const Products = () => {
         return (
             <NewModel
                 show={show}
-                handleClose={handleClose}
+                handleClose={() =>  setShow(false)}
+                onSubmit={handleClose}
                 modalTitle={'ADD new Product'}>
                 <Input
                     value={name}

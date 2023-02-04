@@ -21,6 +21,7 @@ const AddCategoryModel = (props) => {
             show={show}
             handleClose={handleClose}
             modalTitle={modalTitle}
+            onSubmit={onSubmit}
         >
             <Row>
                 <Col>
